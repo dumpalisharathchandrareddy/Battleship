@@ -12,6 +12,7 @@ class Board:
         self.registered_vessels = []   # list of placed ship names
         self.ship_positions = {}       # ship_name -> list of (row, col) tuples
 
+    # displays the board optional
     def display(self, show_ships=False):
         print(f"\n{self.name}'s Board")
         print("    " + " ".join(map(str, range(10))))
@@ -20,6 +21,7 @@ class Board:
             displayed_line = [cell.status if (cell.status != 'S' or show_ships) else " " for cell in row_line]
             print(f"{row_label}   " + " ".join(displayed_line))
 
+    # this function place ship handles errors and orentation and asks for confirmation before placing
     def place_ship(self, ship_name, size):
         done_placing = False
         while not done_placing:
@@ -67,40 +69,45 @@ class Board:
                     confirm = "Y"
                 if confirm == "Y":
                     for (r, c) in slots_occupied:
-                        self.ocean_matrix[r][c].status = "S"
-                    self.fleet_manifest[ship_name] = Ship(ship_name, size)
-                    self.registered_vessels.append(ship_name)
-                    self.ship_positions[ship_name] = slots_occupied
+                        self.ocean_matrix[r][c].status = "S" # Mark the cell when ship is placed
+                    self.fleet_manifest[ship_name] = Ship(ship_name, size) # Add the ship to the fleet mainfast 
+                    self.registered_vessels.append(ship_name) # add the ship name to the list of registed vesssels
+                    self.ship_positions[ship_name] = slots_occupied # Record the ship's position with orenentation
                     done_placing = True
-                    self.display(show_ships=True)
+                    self.display(show_ships=True)# Display the board with ships shown
                 else:
                     print("Placement canceled. Try again.")
             except (ValueError, IndexError) as e:
                 print(f"Error: {e}. Try again.")
+                
+    # resets all ships if they select reset all
 
     def reset_all_ships(self):
         for i in range(26):
             for j in range(10):
                 if self.ocean_matrix[i][j].status == "S":
-                    self.ocean_matrix[i][j].status = " "
-        self.fleet_manifest.clear()
-        self.registered_vessels.clear()
+                    self.ocean_matrix[i][j].status = " "# Clear the cell when reset
+        self.fleet_manifest.clear()# Clear the fleet manifest 
+        self.registered_vessels.clear()# Clear the list 
         self.ship_positions.clear()
 
+    # reset single ship which is selected by player or user
     def remove_single_ship(self, ship_name):
-        """
-        Remove only the specified ship from the board, leaving others intact.
-        """
+        
+        # Remove only the specified ship from the board, leaving others intact.
+    
         if ship_name not in self.fleet_manifest:
             return
         for (r, c) in self.ship_positions[ship_name]:
-            self.ocean_matrix[r][c].status = " "
-        del self.fleet_manifest[ship_name]
-        self.registered_vessels.remove(ship_name)
-        del self.ship_positions[ship_name]
+            self.ocean_matrix[r][c].status = " " #clear the cell
+        del self.fleet_manifest[ship_name] #clear the name from fleet
+        self.registered_vessels.remove(ship_name) # clean the name from list of registered vessel
+        del self.ship_positions[ship_name] #clear position
 
+    # this function checks if the ship is sunk or not and showing remaining ships that are not sunk
     def remaining_ships(self):
         return len([shp for shp in self.fleet_manifest.values() if not shp.is_sunk()])
 
+    # this function checks if the ship is sunk or not and notes sunk ship
     def sunk_ships(self):
         return len([shp for shp in self.fleet_manifest.values() if shp.is_sunk()])

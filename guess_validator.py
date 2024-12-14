@@ -4,6 +4,7 @@ class GuessValidator:
     Rows: A-Z (first 26 letters)
     Columns: 0-9
     """
+    
     @staticmethod
     def validate_input(row, col):
         if row not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[:26] or not (0 <= col < 10):

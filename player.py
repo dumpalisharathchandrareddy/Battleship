@@ -2,7 +2,7 @@ from board import Board
 
 class Player:
     """
-    Represents a player with:
+    This one Represents a player with:
       - a name
       - a personal board (with their ships)
       - a guess board (to track shots at the opponent)
