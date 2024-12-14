@@ -19,8 +19,8 @@ class Ship:
 
 class GridCell:
     """
-    Represents one cell on the game board.
-    Possible states for a cell:
+    Represents each cell on the game board.
+    States for a cell:
       " " = Empty water
       "S" = Ship present in this cell
       "X" = Cell has been hit

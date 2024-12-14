@@ -1,10 +1,10 @@
 from ship import Ship, GridCell
 
 class Board:
-    """
-    Represents a player's board (26 rows by 10 columns).
-    Also tracks ship positions to allow removing/modifying a single ship without clearing all.
-    """
+    
+    # Represents a player's board (26 rows by 10 columns).
+    # Also tracks ship positions to allow removing/modifying a single ship without clearing all.
+    
     def __init__(self, name):
         self.name = name
         self.ocean_matrix = [[GridCell() for _ in range(10)] for _ in range(26)]

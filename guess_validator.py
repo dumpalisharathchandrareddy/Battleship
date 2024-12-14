@@ -1,9 +1,7 @@
 class GuessValidator:
-    """
-    Checks that a guess (row, col) is valid.
-    Rows: A-Z (first 26 letters)
-    Columns: 0-9
-    """
+    
+    # Checks whether a guess (row, col) is valid.
+    # Rows: A-Z (first 26 letters) and Columns: 0-9
     
     @staticmethod
     def validate_input(row, col):
