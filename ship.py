@@ -31,6 +31,8 @@ class GridCell:
 
     def mark_hit(self):
         self.status = "X"
+        self.hits=+1
 
     def mark_miss(self):
         self.status = "O"
+        self.miss=+1

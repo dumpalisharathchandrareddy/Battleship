@@ -1,12 +1,15 @@
 class GameStatistics:
-    """
-    Tracks overall game stats like turns.
-    """
+
+    # Tracks overall game stats like turns.
+    
     def __init__(self):
         self.turns = 0
 
     def increment_turns(self):
         self.turns += 1
+        
+    def get_turns(self):
+        return self.turns
 
 
 class PlayerStatistics:
@@ -45,7 +48,7 @@ class HighScoreManager:
         except FileNotFoundError:
             self.high_score = None
     # saves the high score
-    def save_high_score(self, name, turns):
+    def save_high_score(self, name, score, turns):
         with open(self.filename, "w") as file:
-            file.write(f"{name}: {turns} turns")
-        self.high_score = f"{name}: {turns} turns"
+            file.write(f"{name}: {score} points, {turns} turns")
+        self.high_score = f"{name}: {score} points,{turns} turns"

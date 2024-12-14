@@ -57,9 +57,9 @@ class Game:
             print(f"{player.name}: {self.player_statistics[player.name].get_score()}")
 
     def display_final_boards(self):
-        """
-        Shows both players' boards at the end of the game.
-        """
+        
+        # Shows both players' boards at the end of the game.
+        
         print("\nFinal Boards:")
         for player in self.players:
             print(f"\n{player.name}'s Board:")
@@ -74,7 +74,7 @@ class Game:
         """
         turn_number = 0  # Keeps track of whose turn it is
         while True:
-            self.statistics.increment_turns()  # Increment turn count
+            self.statistics.increment_turns()  # Increment turn count from stats class
             current_player_idx = turn_number % 2  # Get current player's index
             opponent_idx = 1 - current_player_idx  # Get opponent's index
             current_player = self.players[current_player_idx]
@@ -85,9 +85,9 @@ class Game:
             print(f"Current Score: {self.player_statistics[current_player.name].get_score()}")
             
             print(f"\n Remaining Ships of {opponent_player.name}: {opponent_player.board.remaining_ships()}")
-            print(f"\n Ships Sunk of {opponent_player.name}: {opponent_player.board.sunk_ships}")
+            print(f"\n Ships Sunk of {opponent_player.name}: {opponent_player.board.sunk_ships()}")
             
-            print(f"{current_player.name}'s Guess Board:")
+            print(f"\n{current_player.name}'s Guess Board:")
             current_player.guess_board.display()
 
             # Handle player's guess
@@ -95,7 +95,7 @@ class Game:
             while not valid_guess:
                 try:
                     # Get guess input
-                    raw_input_coord = input(f"\n{current_player.name}, enter coordinates (e.g. A5 or A,5): ").upper().replace(" ", "")
+                    raw_input_coord = input(f"\n{current_player.name}, Enter coordinates (e.g. A5 or A,5): ").upper().replace(" ", "")
                     if "," in raw_input_coord:
                         row, col_str = raw_input_coord.split(",")
                     else:
@@ -122,6 +122,14 @@ class Game:
                             current_player.guess_board.ocean_matrix[row_spot][col].mark_hit()  # Update guess board
                             self.player_statistics[current_player.name].update_score(5)  # Reward for a hit
                             self.player_statistics[opponent_player.name].update_score(-1)  # Penalize opponent for getting hit
+                            for ship_name, ship in opponent_player.board.fleet_manifest.items():
+                                if (row_spot, col) in opponent_player.board.ship_positions[ship_name]:
+                                    ship.hits += 1  # Increment the number of hits
+                                    
+                                    # Check if the ship is sunk
+                                    if ship.is_sunk():
+                                        print(f"SHIP SUNK: {ship_name}!")
+                                    break
                         else:
                             # Miss
                             cell.mark_miss()  # Mark miss on opponent's board
@@ -147,12 +155,27 @@ class Game:
                 
                 # Save high score if applicable
                 if self.high_score_manager.high_score:
-                    high_score_turns = int(self.high_score_manager.high_score.split(": ")[1].split(" ")[0])
-                    if self.statistics.get_turns() < high_score_turns:
-                        self.high_score_manager.save_high_score(current_player.name, self.statistics.get_turns())
+                    # Extract current high score details from saved file
+                    high_score_data = self.high_score_manager.high_score.split(": ")
+                    high_score_name, high_score_details = high_score_data[0], high_score_data[1]
+                    high_score_score, high_score_turns = map(int, high_score_details.split(", ")[0].split(" ")[0]), int(high_score_details.split(", ")[1].split(" ")[0])
+                    
+                    # Get the current player's score and turns to update
+                    current_score = self.player_statistics[current_player.name].get_score()
+                    current_turns = self.statistics.turns
+
+                    # Update the high score if:
+                    # - Current player's score is higher than previous, (OR)
+                    # - Scores are equal and current player has fewer turns (if in case old and new high scores are equal)
+                    
+                    if (current_score > high_score_score) or (current_score == high_score_score and current_turns < high_score_turns):
+                        self.high_score_manager.save_high_score(current_player.name, current_score, current_turns)
                 else:
-                    self.high_score_manager.save_high_score(current_player.name, self.statistics.get_turns())
-                
+                    # Save a new high score if no high score exists
+                    current_score = self.player_statistics[current_player.name].get_score()
+                    current_turns = self.statistics.turns
+                    self.high_score_manager.save_high_score(current_player.name, current_score, current_turns)
+
                 break
 
             # Show scores and pass the turn

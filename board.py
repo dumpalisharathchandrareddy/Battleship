@@ -64,7 +64,7 @@ class Board:
 
                 human_readable = [f"{chr(65 + r)}{c}" for r, c in slots_occupied]
                 print(f"{ship_name} would occupy: {', '.join(human_readable)}")
-                confirm = input("Confirm placement (Y/N) [default=Y]: ").upper().strip()
+                confirm = input("Confirm placement (Y/N) [default=Y] [Any other key=N]: ").upper().strip()
                 if confirm == "":
                     confirm = "Y"
                 if confirm == "Y":
@@ -76,7 +76,7 @@ class Board:
                     done_placing = True
                     self.display(show_ships=True)# Display the board with ships shown
                 else:
-                    print("Placement canceled. Try again.")
+                    print("Placement Failed. Try again. ")
             except (ValueError, IndexError) as e:
                 print(f"Error: {e}. Try again.")
                 
@@ -86,9 +86,9 @@ class Board:
         for i in range(26):
             for j in range(10):
                 if self.ocean_matrix[i][j].status == "S":
-                    self.ocean_matrix[i][j].status = " "# Clear the cell when reset
-        self.fleet_manifest.clear()# Clear the fleet manifest 
-        self.registered_vessels.clear()# Clear the list 
+                    self.ocean_matrix[i][j].status = " "# Clears the cells when reset
+        self.fleet_manifest.clear()# Clears the fleet manifest 
+        self.registered_vessels.clear()# Clears the list 
         self.ship_positions.clear()
 
     # reset single ship which is selected by player or user

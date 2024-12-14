@@ -1,7 +1,7 @@
 class ShipPlacementManager:
-    """
-    Manages the initial placement of ships for a player, and allows modifications.
-    """
+    
+    # This class Manages the initial placement of ships for a player, and allows modifications like changing positions etc.
+    
     def __init__(self, player):
         self.player = player
 
